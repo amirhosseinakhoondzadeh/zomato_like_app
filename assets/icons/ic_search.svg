@@ -1,0 +1,5 @@
+<svg id="Search" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <path id="bound" d="M0,0H24V24H0Z" fill="none"/>
+  <path id="Path-2" d="M.281,1.695A1,1,0,0,1,1.695.281l4,4A1,1,0,0,1,4.281,5.695Z" transform="translate(15.012 15.012)" fill="#111" opacity="0.3"/>
+  <path id="Path" d="M.938,10.5A7,7,0,1,1,7,14,7,7,0,0,1,.938,10.5Z" transform="translate(4 4)" fill="none" stroke="#abadb7" stroke-width="2"/>
+</svg>

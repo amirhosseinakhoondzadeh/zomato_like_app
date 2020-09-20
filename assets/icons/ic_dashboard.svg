@@ -1,0 +1,5 @@
+<svg id="Layout-4-Blocks" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <path id="bound" d="M0,0H24V24H0Z" fill="none"/>
+  <rect id="Rectangle-7" width="7" height="7" rx="1.5" transform="translate(4 4)" fill="#111"/>
+  <path id="Combined-Shape" d="M10.5,16A1.5,1.5,0,0,1,9,14.5v-4A1.5,1.5,0,0,1,10.5,9h4A1.5,1.5,0,0,1,16,10.5v4A1.5,1.5,0,0,1,14.5,16Zm-9,0A1.5,1.5,0,0,1,0,14.5v-4A1.5,1.5,0,0,1,1.5,9h4A1.5,1.5,0,0,1,7,10.5v4A1.5,1.5,0,0,1,5.5,16Zm9-9A1.5,1.5,0,0,1,9,5.5v-4A1.5,1.5,0,0,1,10.5,0h4A1.5,1.5,0,0,1,16,1.5v4A1.5,1.5,0,0,1,14.5,7Z" transform="translate(4 4)" fill="#111" opacity="0.3"/>
+</svg>

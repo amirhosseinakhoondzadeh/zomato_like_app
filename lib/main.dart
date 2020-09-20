@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' as services;
 import 'package:zomato_like_app/dependency_injection/injection_container.dart'
     as di;
-
-import 'features/restaurants/presentation/pages/home_screen.dart';
+import 'package:zomato_like_app/ui/side_bar/side_bar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +38,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomeScreen(),
+      home: SideBarScreen(),
     );
   }
 }

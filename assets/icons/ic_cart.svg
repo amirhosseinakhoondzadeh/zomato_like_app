@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24.466" viewBox="0 0 24 24.466">
+  <g id="cart" transform="translate(0 0.215)">
+    <rect id="Rectangle" width="24" height="24" fill="none"/>
+    <g id="shopping-bag" transform="translate(3)">
+      <path id="Path" d="M0,4.965l.36-2.5a2.88,2.88,0,0,1,5.7,0L6.42,5" transform="translate(5.79 0.535)" fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+      <circle id="Oval" cx="1" cy="1" r="1" transform="translate(4.5 7.5)" fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1"/>
+      <circle id="Oval-2" data-name="Oval" cx="1" cy="1" r="1" transform="translate(11.5 7.5)" fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1"/>
+      <path id="Path-2" data-name="Path" d="M15.766,18H1.006a1,1,0,0,1-1-1.11l1.78-16a1,1,0,0,1,1-.89H14a1,1,0,0,1,1,.89l1.78,16A1,1,0,0,1,15.766,18Z" transform="translate(0.614 5.5)" fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"/>
+      <path id="Path-3" data-name="Path" d="M16.34.5H0" transform="translate(0.83 20)" fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1"/>
+    </g>
+  </g>
+</svg>
