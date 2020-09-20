@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' show Client;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zomato_like_app/blocs/home/home_bloc.dart';
 import 'package:zomato_like_app/blocs/side_bar/side_bar_bloc.dart';
 import 'package:zomato_like_app/core/network_info/network_info.dart';
 import 'package:zomato_like_app/data/datasources/local_data_source.dart';
@@ -15,6 +16,10 @@ Future<void> init() async {
   /// Blocs
   sl.registerFactory(
     () => SideBarBloc(),
+  );
+
+  sl.registerFactory(
+    () => HomeBloc(geolocatorPlatform: sl(), repository: sl()),
   );
 
   /// Repository

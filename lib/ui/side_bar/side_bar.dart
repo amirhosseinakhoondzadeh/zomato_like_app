@@ -5,6 +5,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zomato_like_app/blocs/side_bar/side_bar_bloc.dart';
 import 'package:zomato_like_app/core/styles/colors.dart';
 import 'package:zomato_like_app/dependency_injection/injection_container.dart';
+import 'package:zomato_like_app/ui/home/home_screen.dart';
+import 'package:zomato_like_app/ui/invoice/invoice_screen.dart';
+import 'package:zomato_like_app/ui/notification/notification_screen.dart';
+import 'package:zomato_like_app/ui/profile/profile_screen.dart';
 import 'package:zomato_like_app/ui/side_bar/side_bar_custom_clipper.dart';
 import 'package:zomato_like_app/ui/side_bar/side_bar_item_widget.dart';
 
@@ -12,6 +16,7 @@ class SideBarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: BlocProvider(
         create: (_) => sl<SideBarBloc>(),
         child: SideBarWidget(),
@@ -43,6 +48,21 @@ class _SideBarWidgetState extends State<SideBarWidget> with AfterLayoutMixin {
             previous.currentIndex != current.currentIndex,
         builder: (context, state) => Stack(
           children: [
+            Positioned(
+              left: 90,
+              top: 0,
+              bottom: 0,
+              right: 0,
+              child: IndexedStack(
+                index: state.currentIndex,
+                children: [
+                  HomeScreen(),
+                  InvoiceScreen(),
+                  NotificationScreen(),
+                  ProfileScreen()
+                ],
+              ),
+            ),
             Positioned(
               left: 0,
               width: 90,
@@ -185,7 +205,7 @@ class _SideBarWidgetState extends State<SideBarWidget> with AfterLayoutMixin {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
