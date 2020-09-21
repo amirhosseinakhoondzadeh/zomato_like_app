@@ -29,7 +29,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   StreamSubscription _locationSubscription;
 
   List<RestaurantEntity> allNearbyRestaurants;
-  List<RestaurantEntity> allPopularRestaurants = <RestaurantEntity>[];
 
   @override
   Stream<HomeState> mapEventToState(
@@ -94,14 +93,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   HomeState _processSuccessResult(
       GeocodeResponse geoResponse, HomeState state) {
-    List<RestaurantEntity> popularRestaurants = <RestaurantEntity>[];
-
     final cuisines = geoResponse?.popularity?.topCuisines ?? <String>["All"];
     final selectedCuisines = cuisines?.first ?? "All";
-    print("loading popular");
 
-    print("loaded popular : ${allPopularRestaurants.length}");
-
+    // Create the main nearby list
     allNearbyRestaurants = geoResponse.nearbyRestaurants
         .map(
           (e) => RestaurantEntity(
@@ -114,8 +109,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         )
         .toList();
 
+    // Create Filtered nearby list
     final nearbyRestaurants = allNearbyRestaurants
         .where((element) => element.description.contains(selectedCuisines))
+        .toList();
+
+    // Create a duplicate of nearByList as Popular since the api does not return the list
+    final popularRestaurants = geoResponse.nearbyRestaurants
+        .map(
+          (e) => RestaurantEntity(
+              name: e.restaurant.name ?? "",
+              description: e.restaurant.cuisines ?? "",
+              id: e.restaurant.id,
+              price: e.restaurant.averageCostForTwo.toDouble(),
+              currency: e.restaurant.currency,
+              imageUrl: e.restaurant.featuredImage),
+        )
         .toList();
 
     return HomeState.loaded(

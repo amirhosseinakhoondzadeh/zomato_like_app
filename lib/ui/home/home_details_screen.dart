@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:zomato_like_app/blocs/home/details/home_details_bloc.dart';
 import 'package:zomato_like_app/core/styles/colors.dart';
+import 'package:zomato_like_app/dependency_injection/injection_container.dart';
 import 'package:zomato_like_app/entities/restaurant_entity.dart';
 
 class HomeDetailsScreen extends StatelessWidget {
@@ -10,6 +13,17 @@ class HomeDetailsScreen extends StatelessWidget {
 
   HomeDetailsScreen(this.item);
 
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) =>
+          sl<HomeDetailsBloc>()..add(HomeDetailsInitialized(entity: item)),
+      child: HomeDetailsBody(),
+    );
+  }
+}
+
+class HomeDetailsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -78,26 +92,29 @@ class HomeDetailsScreen extends StatelessWidget {
           Stack(
             alignment: Alignment.center,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: CachedNetworkImage(
-                  fit: BoxFit.cover,
-                  width: 200,
-                  height: 200,
-                  imageUrl: item?.imageUrl,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      Container(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                          value: downloadProgress.progress),
+              BlocBuilder<HomeDetailsBloc, HomeDetailsState>(
+                // buildWhen: (p, c) => p?.entity?.imageUrl != c?.entity?.imageUrl,
+                builder: (context, state) => ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    width: 200,
+                    height: 200,
+                    imageUrl: state?.entity?.imageUrl ?? "",
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) => Container(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                            value: downloadProgress.progress),
+                      ),
                     ),
+                    errorWidget: (context, url, error) => Container(
+                        color: Colors.grey[100],
+                        child: Icon(
+                          Icons.error,
+                          color: app_side_bar_selected,
+                        )),
                   ),
-                  errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[100],
-                      child: Icon(
-                        Icons.error,
-                        color: app_side_bar_selected,
-                      )),
                 ),
               ),
               PlayWidget()
@@ -107,12 +124,7 @@ class HomeDetailsScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(
                 left: 32, right: MediaQuery.of(context).size.width * 0.3),
-            child: DescriptionsWidget(
-              title: item?.name ?? "",
-              shortDescription: item?.description ?? "",
-              currency: item.currency,
-              price: item.price.toString(),
-            ),
+            child: DescriptionsWidget(),
           ),
           Spacer(),
         ],
@@ -203,23 +215,30 @@ class PlayWidget extends StatelessWidget {
 class LikeButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 72,
-      height: 48,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(32.0),
-          bottomLeft: Radius.circular(32.0),
+    return GestureDetector(
+      onTap: () => BlocProvider.of<HomeDetailsBloc>(context).add(LikeChanged()),
+      child: Container(
+        width: 72,
+        height: 48,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(32.0),
+            bottomLeft: Radius.circular(32.0),
+          ),
+          color: const Color(0xff99adff),
         ),
-        color: const Color(0xff99adff),
-      ),
-      child: Center(
         child: Center(
-          child: SizedBox(
-            width: 24,
-            height: 24,
-            child: SvgPicture.asset(
-              "assets/icons/ic_like.svg",
+          child: Center(
+            child: SizedBox(
+              width: 24,
+              height: 24,
+              child: BlocBuilder<HomeDetailsBloc, HomeDetailsState>(
+                buildWhen: (p, c) => p.isLiked != c.isLiked,
+                builder: (context, state) => SvgPicture.asset(
+                  "assets/icons/ic_like.svg",
+                  color: state.isLiked ? app_side_bar_selected : Colors.white,
+                ),
+              ),
             ),
           ),
         ),
@@ -230,65 +249,57 @@ class LikeButtonWidget extends StatelessWidget {
 
 /// Description Widget
 class DescriptionsWidget extends StatelessWidget {
-  final String currency;
-  final String price;
-  final String title;
-  final String shortDescription;
-
-  DescriptionsWidget(
-      {@required this.currency,
-      @required this.price,
-      @required this.title,
-      @required this.shortDescription});
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          "$currency$price",
-          style: GoogleFonts.montserrat(
-            textStyle: const TextStyle(
+    return BlocBuilder<HomeDetailsBloc, HomeDetailsState>(
+      buildWhen: (p, c) => p?.entity?.id != c?.entity?.id,
+      builder: (context, state) => Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            "${state?.entity?.currency ?? ""}${state?.entity?.price ?? ""}",
+            style: GoogleFonts.montserrat(
+              textStyle: const TextStyle(
+                  fontSize: 24,
+                  color: const Color(0xff365eff),
+                  fontWeight: FontWeight.w600),
+            ),
+            textAlign: TextAlign.left,
+          ),
+          Container(
+            height: 8,
+          ),
+          // Adobe XD layer: 'Chicken Hamburger' (text)
+          Text(
+            state?.entity?.name ?? "",
+            style: GoogleFonts.roboto(
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w400,
                 fontSize: 24,
-                color: const Color(0xff365eff),
-                fontWeight: FontWeight.w600),
-          ),
-          textAlign: TextAlign.left,
-        ),
-        Container(
-          height: 8,
-        ),
-        // Adobe XD layer: 'Chicken Hamburger' (text)
-        Text(
-          title ?? "",
-          style: GoogleFonts.roboto(
-            textStyle: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 24,
-              color: const Color(0xff373737),
+                color: const Color(0xff373737),
+              ),
             ),
+            textAlign: TextAlign.left,
           ),
-          textAlign: TextAlign.left,
-        ),
-        Container(
-          height: 14,
-        ),
-        Text(
-          shortDescription ?? "",
-          style: GoogleFonts.montserrat(
-            textStyle: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
-              color: const Color(0xff656565),
-              height: 1.5,
+          Container(
+            height: 14,
+          ),
+          Text(
+            state?.entity?.description ?? "",
+            style: GoogleFonts.montserrat(
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                color: const Color(0xff656565),
+                height: 1.5,
+              ),
             ),
+            textAlign: TextAlign.left,
           ),
-          textAlign: TextAlign.left,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -315,7 +326,8 @@ class QuantityWidget extends StatelessWidget {
           ),
           Spacer(),
           GestureDetector(
-            onTap: _onMinusTapped,
+            onTap: () => BlocProvider.of<HomeDetailsBloc>(context)
+                .add(DecrementQuantity()),
             child: Container(
               width: 44,
               height: 44,
@@ -337,22 +349,26 @@ class QuantityWidget extends StatelessWidget {
           Container(
             width: 24,
           ),
-          Text(
-            '1',
-            style: GoogleFonts.montserrat(
-              textStyle: const TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
-                color: const Color(0xff656565),
+          BlocBuilder<HomeDetailsBloc, HomeDetailsState>(
+            buildWhen: (p, c) => p.quantity != c.quantity,
+            builder: (context, state) => Text(
+              "${state?.quantity ?? 1}",
+              style: GoogleFonts.montserrat(
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                  color: const Color(0xff656565),
+                ),
               ),
+              textAlign: TextAlign.left,
             ),
-            textAlign: TextAlign.left,
           ),
           Container(
             width: 24,
           ),
           GestureDetector(
-            onTap: _onPlusTapped,
+            onTap: () => BlocProvider.of<HomeDetailsBloc>(context)
+                .add(IncrementQuantity()),
             child: Container(
               width: 44,
               height: 44,
@@ -375,8 +391,4 @@ class QuantityWidget extends StatelessWidget {
       ),
     );
   }
-
-  void _onMinusTapped() {}
-
-  void _onPlusTapped() {}
 }
