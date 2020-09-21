@@ -29,7 +29,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     if (response?.isNotEmpty ?? false) {
       final jsonResponse = json.decode(response);
       message = jsonResponse["message"] as String ?? "";
-      code = jsonResponse["data"]["status"] as int ?? 0;
+      code = jsonResponse["code"] as int ?? 0;
     }
     return ServerException(message: message, code: code);
   }
@@ -40,18 +40,13 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     final url =
         "https://developers.zomato.com/api/v2.1/geocode?lat=$lat&lon=$lon";
     print("Url : $url");
-    try {
-      final response = await client.get(url, headers: _generateHeader());
-      printWrapped("response : ${json.decode(response.body)}");
-      if (response.statusCode == 200) {
-        return GeocodeResponse.fromJson(json.decode(response.body));
-      } else {
-        printWrapped("error : ${response.body}");
-        throw _handleException(response?.body);
-      }
-    } catch (e) {
-      printWrapped("error : ${e.toString()}");
-      throw ServerException(message: e.toString());
+    final response = await client.get(url, headers: _generateHeader());
+    printWrapped("response : ${json.decode(response.body)}");
+    if (response.statusCode == 200) {
+      return GeocodeResponse.fromJson(json.decode(response.body));
+    } else {
+      printWrapped("error : ${response.body}");
+      throw _handleException(response?.body);
     }
   }
 
@@ -59,18 +54,13 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   Future<RestaurantModel> fetchSingleRestaurantById({String id}) async {
     final url = "https://developers.zomato.com/api/v2.1/restaurant?res_id=$id";
     print("Url : $url");
-    try {
-      final response = await client.get(url, headers: _generateHeader());
-      printWrapped("response : ${json.decode(response.body)}");
-      if (response.statusCode == 200) {
-        return RestaurantModel.fromJson(json.decode(response.body));
-      } else {
-        printWrapped("error : ${response.body}");
-        throw _handleException(response?.body);
-      }
-    } catch (e) {
-      printWrapped("error : ${e.toString()}");
-      throw ServerException(message: e.toString());
+    final response = await client.get(url, headers: _generateHeader());
+    printWrapped("response : ${json.decode(response.body)}");
+    if (response.statusCode == 200) {
+      return RestaurantModel.fromJson(json.decode(response.body));
+    } else {
+      printWrapped("error : ${response.body}");
+      throw _handleException(response?.body);
     }
   }
 }

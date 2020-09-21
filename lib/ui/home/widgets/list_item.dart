@@ -17,12 +17,12 @@ class ListItem extends StatelessWidget {
       onTap: onTapped,
       child: Container(
         width: 184,
-        height: 198,
-        margin: const EdgeInsets.only(right: 24),
+        height: 200,
+        margin: const EdgeInsets.only(right: 24, top: 10, bottom: 10),
         child: Stack(
           children: [
             Positioned(
-              bottom: 0,
+              bottom: 5,
               right: 0,
               width: 168,
               height: 190,
@@ -112,8 +112,8 @@ class ListItem extends StatelessWidget {
                   boxShadow: [
                     BoxShadow(
                       color: const Color(0x1a000000),
-                      offset: Offset(8, 16),
-                      blurRadius: 32,
+                      offset: Offset(2, 8),
+                      blurRadius: 8,
                     ),
                   ],
                 ),

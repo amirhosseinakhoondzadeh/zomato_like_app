@@ -65,7 +65,7 @@ class _SideBarWidgetState extends State<SideBarWidget> with AfterLayoutMixin {
             ),
             Positioned(
               left: 0,
-              width: 90,
+              width: 80,
               bottom: 0,
               top: 0,
               child: ClipPath(
@@ -82,7 +82,7 @@ class _SideBarWidgetState extends State<SideBarWidget> with AfterLayoutMixin {
               ),
             ),
             Positioned(
-              left: 20,
+              left: 15,
               top: 0,
               bottom: 0,
               child: Column(

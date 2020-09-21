@@ -24,70 +24,56 @@ class HomeScreen extends StatelessWidget {
 class HomeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        if (state.isLoading) {
-          return Center(
-            child: CircularProgressIndicator(),
+    return BlocListener<HomeBloc, HomeState>(
+      listener: (context, state) {
+        if (state.isFailure) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text("Opps!"),
+              content: Text(state.failure),
+              actions: [
+                FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text("Ok"),
+                )
+              ],
+            ),
           );
         }
+      },
+      child: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Food & Delivery',
-                  style: GoogleFonts.roboto(
-                    textStyle: TextStyle(
-                      fontSize: 24,
-                      color: const Color(0xff000000),
-                      height: 1.5,
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Food & Delivery',
+                    style: GoogleFonts.roboto(
+                      textStyle: TextStyle(
+                        fontSize: 24,
+                        color: const Color(0xff000000),
+                        height: 1.5,
+                      ),
                     ),
+                    textAlign: TextAlign.left,
                   ),
-                  textAlign: TextAlign.left,
-                ),
-                TabBarWidget(),
-                Container(
-                  height: 6,
-                ),
-                Text(
-                  'Near you',
-                  style: GoogleFonts.roboto(
-                    textStyle: TextStyle(
-                      fontSize: 16,
-                      color: const Color(0xff373737),
-                      height: 1.25,
-                    ),
+                  TabBarWidget(),
+                  Container(
+                    height: 6,
                   ),
-                  textAlign: TextAlign.left,
-                ),
-                Container(
-                  height: 15,
-                ),
-                Container(
-                  height: 198,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return ListItem(
-                        item: state.nearbyRestaurants[index],
-                        onTapped: () => _onItemTapped(
-                          context,
-                          state.nearbyRestaurants[index],
-                        ),
-                      );
-                    },
-                    itemCount: state.nearbyRestaurants.length,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 22, bottom: 15.0),
-                  child: Text(
-                    'Popular',
+                  Text(
+                    'Near you',
                     style: GoogleFonts.roboto(
                       textStyle: TextStyle(
                         fontSize: 16,
@@ -97,56 +83,90 @@ class HomeBody extends StatelessWidget {
                     ),
                     textAlign: TextAlign.left,
                   ),
-                ),
-                Container(
-                  height: 198,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return ListItem(
-                        item: state.popularRestaurants[index],
-                        onTapped: () => _onItemTapped(
-                            context, state.popularRestaurants[index]),
-                      );
-                    },
-                    itemCount: state.popularRestaurants.length,
+                  // Container(
+                  //   height: 15,
+                  // ),
+                  Container(
+                    height: 230,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return ListItem(
+                          item: state.nearbyRestaurants[index],
+                          onTapped: () => _onItemTapped(
+                            context,
+                            state.nearbyRestaurants[index],
+                          ),
+                        );
+                      },
+                      itemCount: state.nearbyRestaurants.length,
+                    ),
                   ),
-                ),
-                Container(
-                  height: 37,
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(100.0),
-                        topRight: Radius.circular(26.0),
-                        bottomRight: Radius.circular(100.0),
-                        bottomLeft: Radius.circular(26.0),
-                      ),
-                      color: const Color(0xff365eff),
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0),
                     child: Text(
-                      'View All',
-                      style: GoogleFonts.montserrat(
-                        textStyle: const TextStyle(
-                          fontSize: 18,
-                          color: const Color(0xffffffff),
+                      'Popular',
+                      style: GoogleFonts.roboto(
+                        textStyle: TextStyle(
+                          fontSize: 16,
+                          color: const Color(0xff373737),
+                          height: 1.25,
+                        ),
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  Container(
+                    height: 230,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return ListItem(
+                          item: state.popularRestaurants[index],
+                          onTapped: () => _onItemTapped(
+                              context, state.popularRestaurants[index]),
+                        );
+                      },
+                      itemCount: state.popularRestaurants.length,
+                    ),
+                  ),
+                  Container(
+                    height: 37,
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(100.0),
+                          topRight: Radius.circular(26.0),
+                          bottomRight: Radius.circular(100.0),
+                          bottomLeft: Radius.circular(26.0),
+                        ),
+                        color: const Color(0xff365eff),
+                      ),
+                      child: Text(
+                        'View All',
+                        style: GoogleFonts.montserrat(
+                          textStyle: const TextStyle(
+                            fontSize: 18,
+                            color: const Color(0xffffffff),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
